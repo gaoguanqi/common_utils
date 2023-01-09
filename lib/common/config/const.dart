@@ -25,3 +25,7 @@ class EventCode {
   static const int EVENT_NETWORK = 100;
 }
 
+
+class IDKey {
+  static const String PAGE_STATE = 'PAGE_STATE';
+}

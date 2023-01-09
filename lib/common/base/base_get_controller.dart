@@ -1,24 +1,35 @@
-import 'package:common_utils/common/base/base.dart';
-import 'package:common_utils/common/widget/state/state.dart';
+import 'package:common_utils/common_utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class BaseGetController extends GetxController {
 
+  /// 是否开启多状态视图
+  bool enablePageState = false;
+
   /// 加载状态
-  var loadState = LoadState.loading;
+  LoadState _pageState = LoadState.loading;
+  LoadState get pageState => _pageState;
+  void setPageState(LoadState state) {
+    _pageState = state;
+  }
 
-  ///  允许下拉
-  bool _enablePullDown = true;
-  bool get enablePullDown => _enablePullDown;
-  void setPullDown(bool value) => _enablePullDown = value;
 
-  ///  允许上拉加载
-  bool _enablePullUp = false;
-  bool get enablePullUp => _enablePullUp;
-  void setPullUp(bool value) => _enablePullUp = value;
+  //
+  // ///  允许下拉
+  // bool _enablePullDown = true;
+  // bool get enablePullDown => _enablePullDown;
+  // void setPullDown(bool value) => _enablePullDown = value;
+  //
+  // ///  允许上拉加载
+  // bool _enablePullUp = false;
+  // bool get enablePullUp => _enablePullUp;
+  // void setPullUp(bool value) => _enablePullUp = value;
 
   @override
   void onInit() {
+    if(enablePageState) {
+      onPageLoading();
+    }
     super.onInit();
   }
 
@@ -36,51 +47,37 @@ class BaseGetController extends GetxController {
 
   @override
   void onClose() {
+    setPageState(LoadState.loading);
+    enablePageState = false;
     super.onClose();
   }
 
-  void initPullLoading(){
-    updateRefresh();
+
+  void onPageLoading() {
+    setPageState(LoadState.loading);
+    _updateState();
   }
 
-  void onRetry(){
-    updateRefresh();
+  void onPageEmpty() {
+    setPageState(LoadState.empty);
+    _updateState();
   }
 
-  void onRefresh() {
-    updateRefresh();
+  void onPageError() {
+    setPageState(LoadState.error);
+    _updateState();
   }
 
-  void onLoadMore() {
-    updateRefresh();
+  void onPageSuccess() {
+    setPageState(LoadState.success);
+    _updateState();
   }
 
-  void updateRefresh(){
-     update(['refresh']);
+  void onPageRetry(){
+    onPageLoading();
   }
 
-
-// void onRefresh() {
-//   DelayedUtils.delayed(() {
-//     if(_refreshController.isRefresh){
-//       _refreshController.refreshCompleted(resetFooterState: true);
-//     }
-//   });
-// }
-// final Random random = Random();
-//
-// void onLoadMore() {
-//   final num = random.nextInt(3); // 0,1,2
-//   DelayedUtils.delayed(() {
-//     if(_refreshController.isLoading){
-//       if(num == 1) {
-//         _refreshController.loadNoData();
-//       } else if(num == 2){
-//         _refreshController.loadFailed();
-//       } else {
-//         _refreshController.loadComplete();
-//       }
-//     }
-//   });
-// }
+  void _updateState(){
+     update([IDKey.PAGE_STATE]);
+  }
 }

@@ -12,3 +12,4 @@ export 'common/base/base.dart';
 export 'common/app/app.dart';
 export 'common/db/db.dart';
 export 'common/langs/langs.dart';
+export 'common/service/service.dart';
