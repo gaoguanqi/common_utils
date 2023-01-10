@@ -1,3 +1,4 @@
+import 'package:common_utils/common/service/service.dart';
 import 'package:common_utils/common/utils/assets_provider.dart';
 import 'package:common_utils/common/widget/state/state.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,7 @@ class Refresh extends StatelessWidget {
                       // AssetsProvider.lottiePath('loadingYellow'),
                       width: 96.0,
                       alignment: Alignment.center,
+                      package: ConfigService.to.getCommonUtilsName()
                     ),
                     Positioned(
                         bottom: -2,

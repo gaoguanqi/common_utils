@@ -16,8 +16,6 @@ class Global{
   /// 是否 android
   static bool isAndroid = Platform.isAndroid;
 
-  static String token = '';
-
   static DBUtil? dbUtil;
 
   static Future<void> init() async {

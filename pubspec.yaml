@@ -47,6 +47,8 @@ dependencies:
   pull_to_refresh_flutter3: ^2.0.1
   # 徽章
   badges: ^2.0.3
+  # 包信息
+  package_info_plus: ^3.0.2
   #############################
 dev_dependencies:
   flutter_test:

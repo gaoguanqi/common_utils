@@ -1,3 +1,4 @@
+import 'package:common_utils/common/service/config_service.dart';
 import 'package:common_utils/common/utils/assets_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -22,6 +23,7 @@ class ErrorPage extends StatelessWidget {
             children: [
               Lottie.asset(
                 AssetsProvider.lottiePath('page_error'),
+                package: ConfigService.to.getCommonUtilsName()
               ),
               OutlinedButton(
                 onPressed: onRetry,

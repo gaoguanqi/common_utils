@@ -41,6 +41,6 @@ class PageStateWidget extends StatelessWidget {
   }
 
   Widget _buildError({BoxConstraints? constraints,VoidCallback? onRetry}) {
-    return ErrorPage(onRetry: onRetry);
+    return ErrorPage(constraints: constraints,onRetry: onRetry);
   }
 }

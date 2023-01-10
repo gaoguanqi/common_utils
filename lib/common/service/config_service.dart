@@ -2,6 +2,7 @@
 import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/config/config.dart';
 import 'package:common_utils/common/utils/utils.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ConfigService extends GetxService{
 
@@ -11,6 +12,8 @@ class ConfigService extends GetxService{
   bool _isFirst = false;
 
   String? _token;
+
+  final String _appName = 'common_utils';
 
   ThemeMode _themeMode = ThemeMode.system;
 
@@ -33,6 +36,8 @@ class ConfigService extends GetxService{
     Get.locale = locale;
     super.onInit();
   }
+
+
 
 
   @override
@@ -89,5 +94,9 @@ class ConfigService extends GetxService{
   void changeZh() {
     locale = languages[0];
     Get.updateLocale(locale);
+  }
+
+  String getCommonUtilsName() {
+    return _appName;
   }
 }

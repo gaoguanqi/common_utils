@@ -1,3 +1,4 @@
+import 'package:common_utils/common/service/config_service.dart';
 import 'package:common_utils/common/utils/assets_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -18,7 +19,7 @@ class EmptyPage extends StatelessWidget {
           alignment: Alignment.center,
           child: Column(
             children: [
-              Lottie.asset(AssetsProvider.lottiePath('page_empty')),
+              Lottie.asset(AssetsProvider.lottiePath('page_empty'),package: ConfigService.to.getCommonUtilsName()),
               const Text(
                 '暂无数据',
                 style: TextStyle(
