@@ -28,7 +28,7 @@ class BaseGetController extends GetxController {
   @override
   void onInit() {
     if(enablePageState) {
-      onPageLoading();
+      showPageLoading();
     }
     super.onInit();
   }
@@ -53,28 +53,28 @@ class BaseGetController extends GetxController {
   }
 
 
-  void onPageLoading() {
+  void showPageLoading() {
     setPageState(LoadState.loading);
     _updateState();
   }
 
-  void onPageEmpty() {
+  void showPageEmpty() {
     setPageState(LoadState.empty);
     _updateState();
   }
 
-  void onPageError() {
+  void showPageError() {
     setPageState(LoadState.error);
     _updateState();
   }
 
-  void onPageSuccess() {
+  void showPageSuccess() {
     setPageState(LoadState.success);
     _updateState();
   }
 
   void onPageRetry(){
-    onPageLoading();
+    showPageLoading();
   }
 
   void _updateState(){
