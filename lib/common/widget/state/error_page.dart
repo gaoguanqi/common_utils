@@ -21,10 +21,7 @@ class ErrorPage extends StatelessWidget {
           alignment: Alignment.center,
           child: Column(
             children: [
-              Lottie.asset(
-                AssetsProvider.lottiePath('page_error'),
-                package: ConfigService.to.getCommonUtilsName()
-              ),
+              Lottie.asset(AssetsProvider.lottiePath('page_error'), package: ConfigService.to.getCommonUtilsName()),
               OutlinedButton(
                 onPressed: onRetry,
                 style: ButtonStyle(

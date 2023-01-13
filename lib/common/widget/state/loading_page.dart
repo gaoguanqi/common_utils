@@ -24,7 +24,11 @@ class LoadingPage extends StatelessWidget {
   }
 
   Widget _buildProgressBar(BuildContext context) {
-    return SpinKitCircle(color: Theme.of(context).primaryColor);
+    return CircularProgressIndicator(
+      color: Theme.of(context).primaryColor,
+      strokeWidth: 5.0, //设置进度条的宽
+      backgroundColor: Colors.white70, //设置进度条背景颜色
+    );
   }
 
   Widget _buildShimmerBody() {

@@ -49,6 +49,12 @@ dependencies:
   badges: ^2.0.3
   # 包信息
   package_info_plus: ^3.0.2
+  # 缓存
+  cached_network_image: ^3.2.3
+  flutter_cache_manager: ^3.3.0
+  # 事件通信
+  event_bus: ^2.0.0
+
   #############################
 dev_dependencies:
   flutter_test:
