@@ -4,7 +4,7 @@ version: 0.0.1
 homepage:
 
 environment:
-  sdk: '>=2.18.5 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
@@ -46,7 +46,7 @@ dependencies:
   # 下拉刷新
   pull_to_refresh_flutter3: ^2.0.1
   # 徽章
-  badges: ^2.0.3
+  badges: ^3.0.2
   # 包信息
   package_info_plus: ^3.0.2
   # 缓存

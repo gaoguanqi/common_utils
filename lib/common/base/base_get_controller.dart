@@ -1,6 +1,8 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+import 'base.dart';
+
 class BaseGetController extends GetxController {
 
   /// 是否开启多状态视图
