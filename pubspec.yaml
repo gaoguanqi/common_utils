@@ -18,7 +18,8 @@ dependencies:
   # 状态管理
   get: ^4.6.5
   # 屏幕适配
-  flutter_screenutil: ^5.6.0
+  flutter_screenutil: ^5.6.1
+
   # http
   dio: ^4.0.6
   dio_cache_interceptor: ^3.3.1
