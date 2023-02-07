@@ -55,6 +55,9 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   # 事件通信
   event_bus: ^2.0.0
+  # 常用图标 https://ionicons.ez-connect.net/#/
+  # Icon(Ionicons.add)
+  ionicons: ^0.2.2
 
   #############################
 dev_dependencies:

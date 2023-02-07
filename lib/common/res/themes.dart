@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
-class AppThemes {
+class KThemes {
 
   /// 亮色
   static ThemeData light = ThemeData(
-      scaffoldBackgroundColor: Colors.white,
-      brightness: Brightness.light,
-      appBarTheme: const AppBarTheme(
-        centerTitle: true,
-        elevation: 0.5,
-        iconTheme: IconThemeData(color: Colors.black87,size: 22.0,),
-        backgroundColor: Colors.white,
-        titleTextStyle: TextStyle(
-          fontSize: 16.0,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
+    scaffoldBackgroundColor: Colors.white,
+    brightness: Brightness.light,
+    appBarTheme: const AppBarTheme(
+      centerTitle: true,
+      elevation: 0.5,
+      iconTheme: IconThemeData(color: Colors.black87,size: 22.0,),
+      backgroundColor: Colors.white,
+      titleTextStyle: TextStyle(
+        fontSize: 16.0,
+        color: Colors.black87,
+        fontWeight: FontWeight.bold,
       ),
+    ),
     navigationBarTheme: const NavigationBarThemeData(backgroundColor: Colors.white),
     colorScheme: ColorScheme.fromSeed(
-          brightness: Brightness.light,
-          seedColor: Colors.white60,
-        ),
+      brightness: Brightness.light,
+      seedColor: Colors.white60,
+    ),
     buttonTheme: const ButtonThemeData(
-        buttonColor: Colors.white60,
+      buttonColor: Colors.white60,
     ),
   );
 

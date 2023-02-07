@@ -35,6 +35,14 @@ class BaseGetController extends GetxController {
     super.onInit();
   }
 
+  void onBack({ String? result }) {
+    if(result != null) {
+      Get.back(result: {'result': result});
+    } else {
+      Get.back();
+    }
+  }
+
   void networkChanged(ConnectivityResult status) {}
 
   @override

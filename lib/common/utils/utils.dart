@@ -16,4 +16,5 @@ export 'event_bus.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_spinkit/flutter_spinkit.dart';
 export 'package:flutter_easyloading/flutter_easyloading.dart';
+export 'package:ionicons/ionicons.dart';
 
