@@ -8,10 +8,16 @@ class ImageLoader {
       width: width,
       height: height,
       fit: fit?? BoxFit.fill,
-      placeholder: (context, url) => CircularProgressIndicator(
-        color: Theme.of(context).primaryColor,
-        strokeWidth: 2.0,
-        backgroundColor: Colors.white70, //设置进度条背景颜色
+      placeholder: (context, url) => UnconstrainedBox(
+        child: SizedBox(
+          width: 14.0,
+          height: 14.0,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.2,
+            color: Theme.of(context).primaryColor,
+            backgroundColor: Colors.white70, //设置进度条背景颜色
+          ),
+        ),
       ),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );

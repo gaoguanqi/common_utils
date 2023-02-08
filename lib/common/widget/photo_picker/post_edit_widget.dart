@@ -1,14 +1,16 @@
 import 'package:common_utils/common/base/base.dart';
+import 'package:common_utils/common/utils/utils.dart';
+import 'package:common_utils/common/widget/gallery/gallery.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-class PostEditPage extends StatefulWidget {
-  const PostEditPage({Key? key}) : super(key: key);
+class PostEditWidget extends StatefulWidget {
+  const PostEditWidget({Key? key}) : super(key: key);
 
   @override
-  State<PostEditPage> createState() => _PostEditPageState();
+  State<PostEditWidget> createState() => _PostEditWidgetState();
 }
 
-class _PostEditPageState extends State<PostEditPage> {
+class _PostEditWidgetState extends State<PostEditWidget> {
 
   // 间距
   final double spacing = 10.0;
@@ -52,7 +54,7 @@ class _PostEditPageState extends State<PostEditPage> {
 
               // 选着图片按钮
               if (selectedAssets.length < maxAssets)
-                _buildAddBtn(context, width),
+                _buildAddView(context, width),
             ],
           );
         },
@@ -60,7 +62,7 @@ class _PostEditPageState extends State<PostEditPage> {
     );
   }
 
-  Widget _buildAddBtn(BuildContext context, double width) {
+  Widget _buildAddView(BuildContext context, double width) {
     return GestureDetector(
       onTap: () async {
         final List<AssetEntity>? result = await AssetPicker.pickAssets(
@@ -70,8 +72,10 @@ class _PostEditPageState extends State<PostEditPage> {
             maxAssets: maxAssets,
           ),
         );
+        if(result == null) return;
         setState(() {
-          selectedAssets = result ?? [];
+          // selectedAssets = result;
+          selectedAssets.add(AssetEntity(id: UniqueKey().toString(), typeInt: AssetType.image.index,title: 'network',relativePath: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',width: 0,height: 0));
         });
       },
       child: Container(
@@ -88,18 +92,24 @@ class _PostEditPageState extends State<PostEditPage> {
   }
 
   Widget _buildPhotoItem(AssetEntity asset, double width) {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(3),
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return GalleryWidget(
+            isBarVisible: true,
+            initialIndex: selectedAssets.indexOf(asset),
+            items: selectedAssets);}),
       ),
-      child: AssetEntityImage(
-        asset,
-        width: width,
-        height: width,
-        fit: BoxFit.cover,
-        isOriginal: false,
-      ),
+      child: _buildImage(asset,width),
+    );
+  }
+
+  Widget _buildImage(AssetEntity item,double width) {
+    return (item.title != null && item.title == "network")? ImageLoader.load(url: item.relativePath??'',width: width,height: width): AssetEntityImage(
+      item,
+      width: width,
+      height: width,
+      fit: BoxFit.cover,
+      isOriginal: false,
     );
   }
 }

@@ -9,6 +9,7 @@ export 'common/widget/refresh/refresh.dart';
 export 'common/widget/refresh/page_config.dart';
 export 'common/widget/badge/badge.dart';
 export 'common/widget/photo_picker/photo_picker.dart';
+export 'common/widget/gallery/gallery.dart';
 export 'common/app/app.dart';
 export 'common/db/db.dart';
 export 'common/langs/langs.dart';

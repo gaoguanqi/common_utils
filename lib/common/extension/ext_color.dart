@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 生成 MaterialColor 色阶表
-extension ColorMaterial on Color {
+extension ExtColor on Color {
 
   MaterialColor get toMaterialColor {
     List<double> strengths = <double>[.05];
