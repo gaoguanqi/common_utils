@@ -45,7 +45,7 @@ class Refresh extends StatelessWidget {
   final VoidCallback? onRetry;
 
   /// 子类
-  final LoadState loadState;
+  final MLoadState loadState;
   final Widget child;
   final RefreshController controller;
 
@@ -57,8 +57,8 @@ class Refresh extends StatelessWidget {
             behavior: OverScrollBehavior(),
             child: SmartRefresher(
             controller: controller,
-            enablePullDown: (loadState == LoadState.loading || loadState == LoadState.error)? false : enablePullDown,
-            enablePullUp: (loadState == LoadState.loading || loadState == LoadState.error)? false : enablePullUp,
+            enablePullDown: (MLoadState == MLoadState.loading || MLoadState == MLoadState.error)? false : enablePullDown,
+            enablePullUp: (MLoadState == MLoadState.loading || MLoadState == MLoadState.error)? false : enablePullUp,
             header: CustomHeader(builder: (BuildContext context, RefreshStatus? mode) {
               const TextStyle textStyle = TextStyle(fontSize: 12.0,color: Colors.black87);
               Widget body = const Text('加载中...',style: textStyle);
@@ -138,11 +138,11 @@ class Refresh extends StatelessWidget {
 
 
   Widget _buildChild(){
-    if(loadState == LoadState.loading) {
+    if(MLoadState == MLoadState.loading) {
       return buildLoading();
-    } else if(loadState == LoadState.empty){
+    } else if(MLoadState == MLoadState.empty){
       return buildEmpty();
-    } else if(loadState == LoadState.error) {
+    } else if(MLoadState == MLoadState.error) {
       return buildError(onRetry);
     }
     return child;

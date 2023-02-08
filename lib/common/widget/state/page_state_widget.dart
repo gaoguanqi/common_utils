@@ -15,12 +15,12 @@ class PageStateWidget extends StatelessWidget {
     if(!controller.enablePageState) {
       return _buildSuccess(child);
     }
-    LoadState state = controller.pageState;
-    if(state == LoadState.loading) {
+    MLoadState state = controller.pageState;
+    if(state == MLoadState.loading) {
       return LayoutBuilder(builder: (BuildContext context,BoxConstraints constraints) => _buildLoading(constraints:constraints));
-    } else if(state == LoadState.empty) {
+    } else if(state == MLoadState.empty) {
       return LayoutBuilder(builder: (BuildContext context,BoxConstraints constraints) => _buildEmpty(constraints:constraints));
-    } else if(state == LoadState.error) {
+    } else if(state == MLoadState.error) {
       return LayoutBuilder(builder: (BuildContext context,BoxConstraints constraints) => _buildError(constraints:constraints,onRetry:onRetry));
     } else {
       return _buildSuccess(child);

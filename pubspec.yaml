@@ -58,6 +58,10 @@ dependencies:
   # 常用图标 https://ionicons.ez-connect.net/#/
   # Icon(Ionicons.add)
   ionicons: ^0.2.2
+  # 图片选择
+  wechat_assets_picker: ^8.4.0
+  # 图片预览
+  extended_image: ^7.0.0
 
   #############################
 dev_dependencies:

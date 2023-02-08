@@ -1,5 +1,5 @@
 /// 加载状态
-enum LoadState {
+enum MLoadState {
   /// 加载中
   loading,
 

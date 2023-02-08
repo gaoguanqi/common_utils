@@ -9,9 +9,9 @@ class BaseGetController extends GetxController {
   bool enablePageState = false;
 
   /// 加载状态
-  LoadState _pageState = LoadState.loading;
-  LoadState get pageState => _pageState;
-  void setPageState(LoadState state) {
+  MLoadState _pageState = MLoadState.loading;
+  MLoadState get pageState => _pageState;
+  void setPageState(MLoadState state) {
     _pageState = state;
   }
 
@@ -57,29 +57,29 @@ class BaseGetController extends GetxController {
 
   @override
   void onClose() {
-    setPageState(LoadState.loading);
+    setPageState(MLoadState.loading);
     enablePageState = false;
     super.onClose();
   }
 
 
   void showPageLoading() {
-    setPageState(LoadState.loading);
+    setPageState(MLoadState.loading);
     _updateState();
   }
 
   void showPageEmpty() {
-    setPageState(LoadState.empty);
+    setPageState(MLoadState.empty);
     _updateState();
   }
 
   void showPageError() {
-    setPageState(LoadState.error);
+    setPageState(MLoadState.error);
     _updateState();
   }
 
   void showPageSuccess() {
-    setPageState(LoadState.success);
+    setPageState(MLoadState.success);
     _updateState();
   }
 
