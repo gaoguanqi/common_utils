@@ -1,5 +1,6 @@
 import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/utils/utils.dart';
+import 'package:common_utils/common/widget/dialog/dialog.dart';
 import 'package:common_utils/common/widget/gallery/gallery.dart';
 import 'package:common_utils/common/widget/photo_picker/photo_picker.dart';
 
@@ -14,7 +15,7 @@ class _PostEditWidgetState extends State<PostEditWidget> {
 
   // 间距
   final double spacing = 10.0;
-
+  // 最多选择的图片数量
   final int maxAssets = 6;
 
   // 选取时边框描边
@@ -83,20 +84,28 @@ class _PostEditWidgetState extends State<PostEditWidget> {
 
   Widget _buildAddView(BuildContext context, double width) {
     return GestureDetector(
-      onTap: () async {
-        final List<AssetEntity>? result = await AssetPicker.pickAssets(
-          context,
-          pickerConfig: AssetPickerConfig(
-            selectedAssets: selectedAssets,
-            maxAssets: maxAssets,
-          ),
-        );
-        if(result == null) return;
-        setState(() {
-          selectedAssets = result;
-          /// 测试网络图片的预览功能
-          // selectedAssets.add(AssetEntity(id: UniqueKey().toString(), typeInt: AssetType.image.index,title: 'network',relativePath: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',width: 0,height: 0));
+      onTap: () {
+        // 选择相册或拍照
+        PhotoDialog.show(() async {
+          PhotoDialog.dismiss();
+          // 相册
+          final List<AssetEntity>? assetResult = await AssetPicker.pickAssets(
+            context,
+            pickerConfig: AssetPickerConfig(
+              selectedAssets: selectedAssets,
+              maxAssets: maxAssets,
+            ),
+          );
+          if(assetResult == null) return;
+            setState(() {
+              selectedAssets = assetResult;
+              /// 测试网络图片的预览功能
+              // selectedAssets.add(AssetEntity(id: UniqueKey().toString(), typeInt: AssetType.image.index,title: 'network',relativePath: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',width: 0,height: 0));
+            });
+        },() {
+          PhotoDialog.dismiss();
         });
+
       },
       child: Container(
         color: Colors.black12,

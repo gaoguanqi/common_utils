@@ -62,6 +62,9 @@ dependencies:
   wechat_assets_picker: ^8.4.0
   # 图片预览
   extended_image: ^7.0.0
+  # 拍照录制
+#  wechat_camera_picker: ^3.7.0
+
 
   #############################
 dev_dependencies:
