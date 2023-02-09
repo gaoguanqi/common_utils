@@ -64,6 +64,9 @@ dependencies:
   extended_image: ^7.0.0
   # 拍照录制
 #  wechat_camera_picker: ^3.7.0
+  camerawesome: ^1.2.1
+  # 获取系统路径
+  path_provider: ^2.0.12
 
 
   #############################

@@ -1,5 +1,6 @@
 import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/utils/utils.dart';
+import 'package:common_utils/common/widget/camera/camera.dart';
 import 'package:common_utils/common/widget/dialog/dialog.dart';
 import 'package:common_utils/common/widget/gallery/gallery.dart';
 import 'package:common_utils/common/widget/photo_picker/photo_picker.dart';
@@ -89,21 +90,29 @@ class _PostEditWidgetState extends State<PostEditWidget> {
         PhotoDialog.show(() async {
           PhotoDialog.dismiss();
           // 相册
-          final List<AssetEntity>? assetResult = await AssetPicker.pickAssets(
-            context,
-            pickerConfig: AssetPickerConfig(
-              selectedAssets: selectedAssets,
-              maxAssets: maxAssets,
-            ),
-          );
-          if(assetResult == null) return;
+          final List<AssetEntity>? result = await PickerUtils.assets(context: context,selectedAssets: selectedAssets,maxAssets: 6);
+          if(result == null) return;
             setState(() {
-              selectedAssets = assetResult;
+              selectedAssets = result;
               /// 测试网络图片的预览功能
               // selectedAssets.add(AssetEntity(id: UniqueKey().toString(), typeInt: AssetType.image.index,title: 'network',relativePath: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',width: 0,height: 0));
             });
-        },() {
+        },() async {
           PhotoDialog.dismiss();
+          // 拍照
+          final asset = await PickerUtils.takePhoto(context);
+          if(asset == null) return;
+          setState(() {
+            selectedAssets.add(asset);
+          });
+        },() async {
+          PhotoDialog.dismiss();
+          // 录视频
+          final asset = await PickerUtils.takeVideo(context);
+          if(asset == null) return;
+          setState(() {
+            selectedAssets.add(asset);
+          });
         });
 
       },

@@ -3,12 +3,12 @@ import 'package:common_utils/common/widget/dialog/base_dialog.dart';
 import 'package:common_utils/common_utils.dart';
 
 class PhotoDialog implements BaseDialog {
-  static void show(VoidCallback onImage,VoidCallback onCamera) {
+  static void show(VoidCallback onImage,VoidCallback onCamera,VoidCallback onVideo) {
     if (Get.isBottomSheetOpen == true) {
       return;
     }
     Get.bottomSheet(
-      _buildDialog(onImage,onCamera),
+      _buildDialog(onImage,onCamera,onVideo),
       elevation: 8.0,
       enterBottomSheetDuration: const Duration(milliseconds: 800),
       exitBottomSheetDuration: const Duration(milliseconds: 300),
@@ -32,7 +32,7 @@ class PhotoDialog implements BaseDialog {
       ],
     ));
   }
-  static Widget _buildDialog(VoidCallback onImage,VoidCallback onCamera) {
+  static Widget _buildDialog(VoidCallback onImage,VoidCallback onCamera,VoidCallback onVideo) {
 
     return Container(
       padding: const EdgeInsets.only(bottom: 36.0),
@@ -44,6 +44,10 @@ class PhotoDialog implements BaseDialog {
         const Divider(height: 0.5, thickness: 0.5, indent: 10.0, endIndent: 10.0,color: Colors.black12),
         _buildItem('拍照',Ionicons.camera,() => {
           onCamera.call()
+        }),
+        const Divider(height: 0.5, thickness: 0.5, indent: 10.0, endIndent: 10.0,color: Colors.black12),
+        _buildItem('视频',Ionicons.videocam,() => {
+          onVideo.call()
         }),
       ],
     ));
