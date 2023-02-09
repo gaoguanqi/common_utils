@@ -1,7 +1,7 @@
 import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/utils/utils.dart';
 import 'package:common_utils/common/widget/gallery/gallery.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:common_utils/common/widget/photo_picker/photo_picker.dart';
 
 class PostEditWidget extends StatefulWidget {
   const PostEditWidget({Key? key}) : super(key: key);
@@ -15,10 +15,16 @@ class _PostEditWidgetState extends State<PostEditWidget> {
   // 间距
   final double spacing = 10.0;
 
-// 图片选取数量
+  // 图片选取数量
   final int maxAssets = 6;
 
   List<AssetEntity> selectedAssets = [];
+
+  // 是否开始拖拽
+  bool isDragNow = false;
+
+  // 是否将要删除
+  bool isWillRemove = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +32,12 @@ class _PostEditWidgetState extends State<PostEditWidget> {
       appBar: AppBar(
         title: const Text("发布"),
       ),
-      body: _mainView(),
+      body: _bodyView(),
+      bottomSheet: isDragNow ? _buildDeleteBar() : null
     );
   }
 
-  Widget _mainView() {
+  Widget _bodyView() {
     return Column(
       children: [
         // 图片列表
@@ -74,8 +81,9 @@ class _PostEditWidgetState extends State<PostEditWidget> {
         );
         if(result == null) return;
         setState(() {
-          // selectedAssets = result;
-          selectedAssets.add(AssetEntity(id: UniqueKey().toString(), typeInt: AssetType.image.index,title: 'network',relativePath: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',width: 0,height: 0));
+          selectedAssets = result;
+          /// 测试网络图片的预览功能
+          // selectedAssets.add(AssetEntity(id: UniqueKey().toString(), typeInt: AssetType.image.index,title: 'network',relativePath: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',width: 0,height: 0));
         });
       },
       child: Container(
@@ -91,25 +99,133 @@ class _PostEditWidgetState extends State<PostEditWidget> {
     );
   }
 
+  /// 图片项
   Widget _buildPhotoItem(AssetEntity asset, double width) {
-    return GestureDetector(
+    return Draggable<AssetEntity>(
+      // 拖放的数据
+      data: asset,
+      // 当可拖动对象开始被拖动时调用。
+      onDragStarted: () {
+        setState(() {
+          isDragNow = true;
+        });
+      },
+     // 当可拖动对象被放下时调用。
+      onDragEnd: (DraggableDetails details) {
+        setState(() {
+          isDragNow = false;
+        });
+      },
+     // 当 draggable 被放置并被 [DragTarget] 接受时调用。
+      onDragCompleted: () {
+
+      },
+      // 当 draggable 被放置但未被 [DragTarget] 接受时调用。
+      onDraggableCanceled: (Velocity velocity, Offset offset) {
+        setState(() {
+          isDragNow = false;
+        });
+      },
+      // 当正在进行一个或多个拖动时显示的小部件而不是 [child]。
+      childWhenDragging: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Opacity(
+          opacity: 0.2,
+          child: _buildImage(asset, width),
+        ),
+      ),
+      // 拖动进行时显示在指针下方的小部件。
+      feedback: _buildPhotoImage(asset,width), child: GestureDetector(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) {
         return GalleryWidget(
             isBarVisible: true,
             initialIndex: selectedAssets.indexOf(asset),
             items: selectedAssets);}),
       ),
-      child: _buildImage(asset,width),
-    );
+      child: _buildPhotoImage(asset,width),
+    ));
   }
 
   Widget _buildImage(AssetEntity item,double width) {
-    return (item.title != null && item.title == "network")? ImageLoader.load(url: item.relativePath??'',width: width,height: width): AssetEntityImage(
+    return PickerUtils.isNetworkImage(item.title)? ImageLoader.load(url: item.relativePath??'',width: width,height: width): AssetEntityImage(
       item,
       width: width,
       height: width,
       fit: BoxFit.cover,
       isOriginal: false,
+    );
+  }
+
+  Widget _buildPhotoImage(AssetEntity asset,double size) {
+    return Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(3.0)
+    ),
+    child: _buildImage(asset,size));
+  }
+
+
+  // 底部删除bar
+  Widget _buildDeleteBar() {
+    return DragTarget<AssetEntity>(
+      // 调用以构建此小部件的内容。
+      builder: (context, candidateData, rejectedData) {
+        return SizedBox(
+          width: double.infinity,
+          child: Container(
+            color: isWillRemove ? Colors.red[300] : Colors.red[200],
+            height: 120.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 图标
+                Icon(
+                  Icons.delete,
+                  color: isWillRemove ? Colors.white : Colors.white70,
+                  size: 24.0,
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 4.0)),
+                // 文字
+                Text(
+                  "拖拽到这里删除",
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    color: isWillRemove ? Colors.white : Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+
+      // 调用以确定此小部件是否有兴趣接收给定的 被拖动到这个拖动目标上的数据片段。
+      onWillAccept: (data) {
+        setState(() {
+          isWillRemove = true;
+        });
+        return true;
+      },
+
+      // 当一条可接受的数据被拖放到这个拖动目标上时调用。
+      onAccept: (data) {
+        selectedAssets.remove(data);
+        setState(() {
+          isWillRemove = false;
+        });
+      },
+
+      // 当被拖动到该目标上的给定数据离开时调用 目标。
+      onLeave: (data) {
+        setState(() {
+          isWillRemove = false;
+        });
+      },
     );
   }
 }

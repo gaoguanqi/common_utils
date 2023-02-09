@@ -2,7 +2,7 @@ import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/res/res.dart';
 import 'package:common_utils/common/widget/appbar/appbar.dart';
 import 'package:common_utils/common/widget/gallery/gallery.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:common_utils/common/widget/photo_picker/photo_picker.dart';
 
 class GalleryWidget extends StatefulWidget {
   const GalleryWidget(
@@ -91,7 +91,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
       itemCount: widget.items.length,
       itemBuilder: (BuildContext context, int index) {
         final AssetEntity item = widget.items[index];
-        final ImageProvider image = (item.title != null && item.title == "network")? _buildNetworkImage(item): _buildAssetImage(item);
+        final ImageProvider image = PickerUtils.isNetworkImage(item.title)? _buildNetworkImage(item): _buildAssetImage(item);
         return ExtendedImage(
           image: image,
           fit: BoxFit.contain,
