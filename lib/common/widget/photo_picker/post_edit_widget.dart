@@ -15,8 +15,13 @@ class _PostEditWidgetState extends State<PostEditWidget> {
   // 间距
   final double spacing = 10.0;
 
-  // 图片选取数量
   final int maxAssets = 6;
+
+  // 选取时边框描边
+  // final Color accentColor = Colors.blue;
+
+  // 图片边框
+  final double imagePadding = 1.0;
 
   List<AssetEntity> selectedAssets = [];
 
@@ -25,6 +30,12 @@ class _PostEditWidgetState extends State<PostEditWidget> {
 
   // 是否将要删除
   bool isWillRemove = false;
+
+  // 是否将要排序
+  bool isWillOrder = false;
+
+  // 被拖拽到 id
+  String targetAssetId = '';
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +62,8 @@ class _PostEditWidgetState extends State<PostEditWidget> {
       padding: EdgeInsets.all(spacing),
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final double width = (constraints.maxWidth - spacing * 2) / 3;
+          final double width =
+              (constraints.maxWidth - spacing * 2 - imagePadding * 2 * 3) / 3;
           return Wrap(
             spacing: spacing,
             runSpacing: spacing,
@@ -114,6 +126,7 @@ class _PostEditWidgetState extends State<PostEditWidget> {
       onDragEnd: (DraggableDetails details) {
         setState(() {
           isDragNow = false;
+          isWillOrder = false;
         });
       },
      // 当 draggable 被放置并被 [DragTarget] 接受时调用。
@@ -124,6 +137,7 @@ class _PostEditWidgetState extends State<PostEditWidget> {
       onDraggableCanceled: (Velocity velocity, Offset offset) {
         setState(() {
           isDragNow = false;
+          isWillOrder = false;
         });
       },
       // 当正在进行一个或多个拖动时显示的小部件而不是 [child]。
@@ -138,15 +152,54 @@ class _PostEditWidgetState extends State<PostEditWidget> {
         ),
       ),
       // 拖动进行时显示在指针下方的小部件。
-      feedback: _buildPhotoImage(asset,width), child: GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return GalleryWidget(
-            isBarVisible: true,
-            initialIndex: selectedAssets.indexOf(asset),
-            items: selectedAssets);}),
+      feedback: _buildPhotoImage(false,asset,width),
+      child: DragTarget<AssetEntity>(
+        builder: (context, candidateData, rejectedData) {
+          return GestureDetector(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return GalleryWidget(
+                  isBarVisible: true,
+                  initialIndex: selectedAssets.indexOf(asset),
+                  items: selectedAssets);}),
+            ),
+            child: _buildPhotoImage(true,asset,width),
+          );
+        },
+
+        onWillAccept: (data){
+          setState(() {
+            isWillOrder = true;
+            targetAssetId = asset.id;
+          });
+          return true;
+        },
+        onAccept: (data) {
+          // 0 当前元素位置
+          int targetIndex = selectedAssets.indexWhere((element) {
+            return element.id == asset.id;
+          });
+
+          // 1 删除原来的
+          selectedAssets.removeWhere((element) {
+            return element.id == data.id;
+          });
+
+          // 2 插入到目标前面
+          selectedAssets.insert(targetIndex, data);
+
+          setState(() {
+            isWillOrder = false;
+            targetAssetId = '';
+          });
+        },
+        onLeave: (data) {
+          setState(() {
+            isWillOrder = false;
+            targetAssetId = '';
+          });
+        }
       ),
-      child: _buildPhotoImage(asset,width),
-    ));
+    );
   }
 
   Widget _buildImage(AssetEntity item,double width) {
@@ -159,13 +212,22 @@ class _PostEditWidgetState extends State<PostEditWidget> {
     );
   }
 
-  Widget _buildPhotoImage(AssetEntity asset,double size) {
-    return Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(3.0)
-    ),
-    child: _buildImage(asset,size));
+  Widget _buildPhotoImage(bool isChange,AssetEntity asset,double size) {
+    if(isChange) {
+      return Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3.0)
+          ),
+          child: _buildImage(asset,size));
+    } else {
+      return Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3.0)
+          ),
+          child: _buildImage(asset,size));
+    }
   }
 
 
