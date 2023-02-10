@@ -21,7 +21,10 @@ class PhotoDialog implements BaseDialog {
   }
 
   static Widget _buildItem(String name, IoniconsData icon,VoidCallback call) {
-    return TextButton(onPressed: call, child: Row(
+    return MaterialButton(
+      height: 44.0,
+      onPressed: call, child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         CircleAvatar(
             radius: 12.0,
