@@ -110,7 +110,7 @@ class DioInterceptors extends Interceptor {
     ToastUtils.showToast(err.message);
     switch(err.type) {
     // 连接服务器超时
-      case DioErrorType.connectTimeout:
+      case DioErrorType.connectionTimeout:
         {
           // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
           LogUtils.GGQ('http error===connectTimeout:>${err.message}');
@@ -139,17 +139,31 @@ class DioInterceptors extends Interceptor {
         }
         break;
     // 404/503错误
-      case DioErrorType.response:
+      case DioErrorType.badResponse:
         {
           // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
           LogUtils.GGQ('http error===response:>${err.message}');
 
         }
         break;
-    // other 其他错误类型
-      case DioErrorType.other:
+      case DioErrorType.connectionError:
         {
-          LogUtils.GGQ('http error===other:>${err.message}');
+          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
+          LogUtils.GGQ('http error===connectionError:>${err.message}');
+
+        }
+        break;
+      case DioErrorType.badCertificate:
+        {
+          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
+          LogUtils.GGQ('http error===badCertificate:>${err.message}');
+
+        }
+        break;
+    // other 其他错误类型
+      case DioErrorType.unknown:
+        {
+          LogUtils.GGQ('http error===unknown:>${err.message}');
         }
         break;
 

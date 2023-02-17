@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:common_utils/common/utils/loading.dart';
 import 'package:common_utils/common/utils/logger.dart';
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 import 'http.dart';
@@ -11,9 +11,9 @@ import 'http.dart';
 class DioUtil {
 
   /// 连接超时时间
-  static const int CONNECT_TIMEOUT = 6 * 1000;
+  static const Duration CONNECT_TIMEOUT = Duration(minutes: 1);
   /// 响应超时时间
-  static const int RECEIVE_TIMEOUT = 6 * 1000;
+  static const Duration RECEIVE_TIMEOUT = Duration(minutes: 1);
   /// 请求的URL前缀
   static String BASE_URL = "";
   /// 是否开启网络缓存,默认false
@@ -41,7 +41,7 @@ class DioUtil {
 
 
   /// 取消请求token
-  CancelToken _cancelToken = CancelToken();
+  final CancelToken _cancelToken = CancelToken();
   /// cookie
   CookieJar cookieJar = CookieJar();
 
@@ -78,7 +78,7 @@ class DioUtil {
     bool enable = false
   }) {
     if (enable) {
-      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+      (_dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.findProxy = (uri) {
           return proxyAddress ?? "";
@@ -95,7 +95,7 @@ class DioUtil {
     bool enable = false
   }) {
     if (enable) {
-      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
+      (_dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
         client.badCertificateCallback=(X509Certificate cert, String host, int port){
           if(cert.pem == pem){ // 验证证书
             return true;
@@ -122,7 +122,7 @@ class DioUtil {
     ProgressCallback? onReceiveProgress,
     bool? hasShowLoading = true
   }) async {
-    const _methodValues = {
+    const methodValues = {
       DioMethod.get: 'get',
       DioMethod.post: 'post',
       DioMethod.put: 'put',
@@ -131,7 +131,7 @@ class DioUtil {
       DioMethod.head: 'head'
     };
 
-    options ??= Options(method: _methodValues[method]);
+    options ??= Options(method: methodValues[method]);
     try {
       if(hasShowLoading?? false) {
         Loading.show();
