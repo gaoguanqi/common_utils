@@ -1,5 +1,5 @@
 class GlobalConfig{
-  static const String BASE_URL = 'http://192.168.1.71:8090';
+  static const String BASE_URL = 'http://192.168.50.200:8080';
 }
 
 class SaveInfoKey {

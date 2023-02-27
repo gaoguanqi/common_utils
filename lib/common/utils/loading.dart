@@ -1,3 +1,4 @@
+import 'package:common_utils/common/service/service.dart';
 import 'package:common_utils/common/utils/assets_provider.dart';
 import 'package:common_utils/common/widget/state/state.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class Loading {
       color: Colors.white,
       width: 32.0,
       height: 48.0,
-      child: Lottie.asset(AssetsProvider.lottiePath('loading')),
+      child: Lottie.asset(AssetsProvider.lottiePath('loading'),package: ConfigService.to.getCommonUtilsName()),
     );
     if(!EasyLoading.isShow) {
       EasyLoading.show(status: text ?? 'loading...');

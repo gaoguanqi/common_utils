@@ -1,4 +1,5 @@
 
+import 'dart:collection';
 import 'dart:convert' as convert;
 
 import 'package:common_utils/common/utils/logger.dart';
@@ -27,6 +28,12 @@ class DioResponse<Object> {
     return DioResponse(code: map['code'],message: map['message'],data: map['data']);
   }
 
+  static DioResponse defaultResponse() {
+    final Map<String, dynamic> map = HashMap();
+    map['code'] = -1;
+    map['message'] = '操作失败，请稍候重试！';
+    return getResponse(convert.jsonDecode(map.toString()));
+  }
   @override
   String toString() {
     StringBuffer sb = StringBuffer('{');

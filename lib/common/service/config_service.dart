@@ -2,6 +2,7 @@
 import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/config/config.dart';
 import 'package:common_utils/common/utils/utils.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class ConfigService extends GetxService{
@@ -17,6 +18,9 @@ class ConfigService extends GetxService{
 
   ThemeMode _themeMode = ThemeMode.system;
 
+  final Connectivity connectivity = Connectivity();
+
+
 
   Locale locale = const Locale('zh', 'CN');
 
@@ -24,7 +28,6 @@ class ConfigService extends GetxService{
     const Locale('zh', 'CN'),
     const Locale('en', 'US'),
   ];
-
 
 
 
@@ -99,4 +102,6 @@ class ConfigService extends GetxService{
   String getCommonUtilsName() {
     return _appName;
   }
+
+
 }

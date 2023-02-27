@@ -1,6 +1,8 @@
 import 'package:common_utils/common/service/config_service.dart';
 import 'package:common_utils/common/utils/logger.dart';
 import 'package:common_utils/common/utils/toast.dart';
+import 'package:common_utils/common/utils/utils.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
 import 'http.dart';
@@ -8,7 +10,16 @@ import 'http.dart';
 class DioInterceptors extends Interceptor {
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+
+    final connectivityResult  = await ConfigService.to.connectivity.checkConnectivity();
+    LogUtils.GGQ('----connectivityResult------>>${connectivityResult.toString()}');
+
+    if(ConnectivityResult.none.name == connectivityResult.name) {
+      ToastUtils.showToast('请检查网络！');
+      Loading.dismiss();
+      return;
+    }
 
     // 对非open的接口的请求参数全部增加userId
     // if (!options.path.contains("open")) {
@@ -107,67 +118,10 @@ class DioInterceptors extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    ToastUtils.showToast(err.message);
-    switch(err.type) {
-    // 连接服务器超时
-      case DioErrorType.connectionTimeout:
-        {
-          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
-          LogUtils.GGQ('http error===connectTimeout:>${err.message}');
-        }
-        break;
-    // 响应超时
-      case DioErrorType.receiveTimeout:
-        {
-          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
-          LogUtils.GGQ('http error===receiveTimeout:>${err.message}');
-        }
-        break;
-    // 发送超时
-      case DioErrorType.sendTimeout:
-        {
-          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
-          LogUtils.GGQ('http error===sendTimeout:>${err.message}');
-        }
-        break;
-    // 请求取消
-      case DioErrorType.cancel:
-        {
-          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
-          LogUtils.GGQ('http error===cancel:>${err.message}');
-
-        }
-        break;
-    // 404/503错误
-      case DioErrorType.badResponse:
-        {
-          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
-          LogUtils.GGQ('http error===response:>${err.message}');
-
-        }
-        break;
-      case DioErrorType.connectionError:
-        {
-          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
-          LogUtils.GGQ('http error===connectionError:>${err.message}');
-
-        }
-        break;
-      case DioErrorType.badCertificate:
-        {
-          // 根据自己的业务需求来设定该如何操作,可以是弹出框提示/或者做一些路由跳转处理
-          LogUtils.GGQ('http error===badCertificate:>${err.message}');
-
-        }
-        break;
-    // other 其他错误类型
-      case DioErrorType.unknown:
-        {
-          LogUtils.GGQ('http error===unknown:>${err.message}');
-        }
-        break;
-
-    }
-    super.onError(err, handler);
+    // error统一处理
+    ApiException apiException = ApiException.init(err);
+    // err.error = apiException;
+    err.copyWith(response: Response(requestOptions: err.requestOptions,statusCode: apiException.code,statusMessage: apiException.message));
+    handler.next(err);
   }
 }

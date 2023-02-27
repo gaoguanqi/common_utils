@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:common_utils/common/config/config.dart';
 import 'package:common_utils/common/utils/loading.dart';
 import 'package:common_utils/common/utils/logger.dart';
+import 'package:common_utils/common_utils.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -15,7 +18,7 @@ class DioUtil {
   /// 响应超时时间
   static const Duration RECEIVE_TIMEOUT = Duration(minutes: 1);
   /// 请求的URL前缀
-  static String BASE_URL = "";
+  static String BASE_URL = GlobalConfig.BASE_URL;
   /// 是否开启网络缓存,默认false
   static bool CACHE_ENABLE = false;
   /// 最大缓存时间(按秒), 默认缓存七天,可自行调节
@@ -56,11 +59,11 @@ class DioUtil {
     /// 初始化dio
     _dio = Dio(options);
 
-    /// 添加拦截器
-    _dio.interceptors.add(DioInterceptors());
-
     /// 添加转换器
     _dio.transformer = DioTransformer();
+
+    /// 添加拦截器
+    _dio.interceptors.add(DioInterceptors());
 
     /// 添加cookie管理器
     _dio.interceptors.add(CookieManager(cookieJar));
@@ -132,29 +135,31 @@ class DioUtil {
     };
 
     options ??= Options(method: methodValues[method]);
-    try {
+    Completer<T> completer = Completer();
       if(hasShowLoading?? false) {
         Loading.show();
       }
-      Response response = await _dio.request(path,
-          data: data,
-          queryParameters: params,
-          cancelToken: cancelToken ?? _cancelToken,
-          options: options,
-          onSendProgress: onSendProgress,
-          onReceiveProgress: onReceiveProgress
-      );
-      return response.data;
-    } on DioError catch (e) {
-      // throw e;
-      LogUtils.GGQ('==http==DioError==>>>>>${e.message}');
-      return e.response?.data;
-    } finally {
+    await _dio.request<T>(
+            path,
+            data: data,
+            queryParameters: params,
+            cancelToken: cancelToken ?? _cancelToken,
+            options: options,
+            onSendProgress: onSendProgress,
+            onReceiveProgress: onReceiveProgress
+    ).then((value) => {
+      completer.complete(value.data),
+    })
+     .catchError((error) => {
+      completer.complete(error),
+      completer.completeError(error),
+    })
+     .whenComplete(() => {
       if(hasShowLoading?? false) {
-        Loading.dismiss();
+        Loading.dismiss()
       }
-      LogUtils.GGQ('----finally-----');
-    }
+    });
+    return completer.future;
   }
 
   /// 取消网络请求
