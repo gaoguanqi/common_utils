@@ -2,7 +2,7 @@ import 'package:common_utils/common/service/service.dart';
 import 'package:common_utils/common/utils/assets_provider.dart';
 import 'package:common_utils/common/widget/state/state.dart';
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:pull_to_refresh_pro/pull_to_refresh_pro.dart';
 
 import 'over_scroll_behavior.dart';
 

@@ -47,7 +47,8 @@ dependencies:
   # 网络状态
   connectivity_plus: ^3.0.2
   # 下拉刷新
-  pull_to_refresh_flutter3: ^2.0.1
+#  pull_to_refresh_flutter3: ^2.0.1
+  pull_to_refresh_pro: ^0.0.1
   # 徽章
   badges: ^3.0.2
   # 包信息
