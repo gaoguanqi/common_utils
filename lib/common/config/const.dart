@@ -29,3 +29,12 @@ class EventCode {
 class IDKey {
   static const String PAGE_STATE = 'PAGE_STATE';
 }
+
+
+class DataKey {
+  static const String code = 'code';
+  static const String msg = 'msg';
+  static const String data = 'data';
+
+  static const String auth = 'Authorization';
+}

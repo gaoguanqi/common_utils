@@ -11,10 +11,6 @@ class Global{
 
   /// 是否 release
   static bool get isRelease => const bool.fromEnvironment("dart.vm.product");
-  /// 是否 ios
-  static bool isIOS = Platform.isIOS;
-  /// 是否 android
-  static bool isAndroid = Platform.isAndroid;
 
   static DBUtil? dbUtil;
 

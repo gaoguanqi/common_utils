@@ -53,6 +53,8 @@ dependencies:
   badges: ^3.0.2
   # 包信息
   package_info_plus: ^3.0.2
+  # 设备信息
+  device_info_plus: ^8.1.0
   # 缓存
   cached_network_image: ^3.2.3
   flutter_cache_manager: ^3.3.0
@@ -78,6 +80,12 @@ dependencies:
   video_player: 2.5.1
   # 视频播放封装
   chewie: 1.4.0
+
+  # 格式化String https://github.com/Naddiseo/dart-sprintf
+  sprintf: ^7.0.0
+
+  # 工具
+
 
 
   #############################

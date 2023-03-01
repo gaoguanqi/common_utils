@@ -12,6 +12,7 @@ export 'toast.dart';
 export 'random_utils.dart';
 export 'storage.dart';
 export 'image_loader.dart';
+export 'device_util.dart';
 export 'event_bus.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_spinkit/flutter_spinkit.dart';

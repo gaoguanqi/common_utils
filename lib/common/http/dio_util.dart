@@ -1,30 +1,20 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:common_utils/common/config/config.dart';
-import 'package:common_utils/common/utils/loading.dart';
-import 'package:common_utils/common/utils/logger.dart';
 import 'package:common_utils/common_utils.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 import 'http.dart';
 
 class DioUtil {
 
   /// 连接超时时间
-  static const Duration CONNECT_TIMEOUT = Duration(minutes: 1);
+  static const Duration _connectTimeout = Duration(seconds: 15);
   /// 响应超时时间
-  static const Duration RECEIVE_TIMEOUT = Duration(minutes: 1);
-  /// 请求的URL前缀
-  static String BASE_URL = GlobalConfig.BASE_URL;
-  /// 是否开启网络缓存,默认false
-  static bool CACHE_ENABLE = false;
-  /// 最大缓存时间(按秒), 默认缓存七天,可自行调节
-  static int MAX_CACHE_AGE = 7 * 24 * 60 * 60;
-  /// 最大缓存条数(默认一百条)
-  static int MAX_CACHE_COUNT = 100;
+  static const Duration _receiveTimeout = Duration(seconds: 15);
+
+  static const Duration _sendTimeout = Duration(seconds: 15);
+
 
   static DioUtil? _instance;
   static Dio _dio = Dio();
@@ -45,15 +35,14 @@ class DioUtil {
 
   /// 取消请求token
   final CancelToken _cancelToken = CancelToken();
-  /// cookie
-  CookieJar cookieJar = CookieJar();
 
   _init() {
     /// 初始化基本选项
     BaseOptions options = BaseOptions(
-        baseUrl: BASE_URL,
-        connectTimeout: CONNECT_TIMEOUT,
-        receiveTimeout: RECEIVE_TIMEOUT
+        baseUrl: GlobalConfig.BASE_URL,
+        connectTimeout: _connectTimeout,
+        receiveTimeout: _receiveTimeout,
+        sendTimeout: _sendTimeout
     );
 
     /// 初始化dio
@@ -62,17 +51,22 @@ class DioUtil {
     /// 添加转换器
     _dio.transformer = DioTransformer();
 
-    /// 添加拦截器
-    _dio.interceptors.add(DioInterceptors());
-
     /// 添加cookie管理器
-    _dio.interceptors.add(CookieManager(cookieJar));
+    // _dio.interceptors.add(CookieManager(cookieJar));
 
     /// 刷新token拦截器(lock/unlock)
-    _dio.interceptors.add(DioTokenInterceptors());
+    if(ConfigService.to.isRefreshToken) {
+      _dio.interceptors.add(TokenInterceptor());
+    }
 
     /// 添加缓存拦截器
-    _dio.interceptors.add(DioCacheInterceptors());
+    // _dio.interceptors.add(DioCacheInterceptors());
+
+    /// 添加拦截器
+    _dio.interceptors.add(AdapterInterceptor());
+
+    /// 添加日志拦截器
+    _dio.interceptors.add(LoggingInterceptor());
   }
 
   /// 设置Http代理(设置即开启)
@@ -84,7 +78,7 @@ class DioUtil {
       (_dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.findProxy = (uri) {
-          return proxyAddress ?? "";
+          return proxyAddress ?? '';
         };
         client.badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
@@ -114,8 +108,14 @@ class DioUtil {
     _dio.interceptors.add(LogInterceptor(responseBody: true));
   }
 
+  Options _checkOptions(DioMethod method, Options? options) {
+    options ??= Options();
+    options.method = method.value;
+    return options;
+  }
+
   /// 请求类
-  Future<T> request<T>(String path, {
+  Future<DioResponse> _request<T>(String path, {
     DioMethod method = DioMethod.get,
     Map<String, dynamic>? params,
     data,
@@ -123,51 +123,80 @@ class DioUtil {
     Options? options,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
-    bool? hasShowLoading = true
   }) async {
-    const methodValues = {
-      DioMethod.get: 'get',
-      DioMethod.post: 'post',
-      DioMethod.put: 'put',
-      DioMethod.delete: 'delete',
-      DioMethod.patch: 'patch',
-      DioMethod.head: 'head'
-    };
+    options ??= _checkOptions(method, options);
+    final Response<T> response = await _dio.request<T>(
+        path,
+        data: data,
+        queryParameters: params,
+        cancelToken: cancelToken ?? _cancelToken,
+        options: options,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress
+    );
+    try {
+      final String data = response.data.toString();
+      LogUtils.GGQ("===datane呢====================>>>>>${data}");
+      return DioResponse.fromJson(parseData(data));
+    } catch (e) {
+      return DioResponse.formError(ErrorHandle.parseError);
+    }
+  }
 
-    options ??= Options(method: methodValues[method]);
-    Completer<T> completer = Completer();
-      if(hasShowLoading?? false) {
-        Loading.show();
+  Future<dynamic> request<T>(String path,  {
+    DioMethod method = DioMethod.get,
+    Map<String, dynamic>? params,
+    data,
+    CancelToken? cancelToken,
+    Options? options,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    bool? isShowLoading,
+    bool? isShowToast,
+    Success? success,
+    Fail? fail,
+  }) {
+    if(isShowLoading?? false) {
+      Loading.show();
+    }
+    return _request<T>(path,
+      method: method,
+      params: params,
+      data: data,
+      cancelToken: cancelToken,
+      options: options,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress
+    ).then<void>((DioResponse result) {
+      if (ResponseUtils.isSuccess(result.code)) {
+         success?.call(result.data);
+      } else {
+        if(isShowToast?? false) {
+          ToastUtils.showToast(ResponseUtils.getMessage(result.msg));
+        }
+        fail?.call(result.code?? ErrorHandle.unknownError, ResponseUtils.getMessage(result.msg));
       }
-    await _dio.request<T>(
-            path,
-            data: data,
-            queryParameters: params,
-            cancelToken: cancelToken ?? _cancelToken,
-            options: options,
-            onSendProgress: onSendProgress,
-            onReceiveProgress: onReceiveProgress
-    ).then((value) => {
-      completer.complete(value.data),
-    })
-     .catchError((error) => {
-      completer.complete(error),
-      completer.completeError(error),
-    })
-     .whenComplete(() => {
-      if(hasShowLoading?? false) {
+    }, onError: (dynamic e) {
+      LogUtils.GGQ('-----onError----->>${e.toString()}');
+      final NetError error = ErrorHandle.handleException(e);
+      if(isShowToast?? false) {
+        ToastUtils.showToast(error.msg);
+      }
+      fail?.call(error.code,error.msg);
+    }).whenComplete(() => {
+      if(isShowLoading?? false) {
         Loading.dismiss()
       }
     });
-    return completer.future;
   }
+
 
   /// 取消网络请求
   void cancelRequests({CancelToken? token}) {
-    token ?? _cancelToken.cancel("cancelled");
+    token ?? _cancelToken.cancel('cancelled');
   }
 }
 
 
-typedef onBefore = void Function();
-typedef onComplete = void Function();
+typedef Success = void Function(dynamic data);
+typedef Fail = void Function(int code,String msg);

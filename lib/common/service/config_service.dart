@@ -3,7 +3,6 @@ import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/config/config.dart';
 import 'package:common_utils/common/utils/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class ConfigService extends GetxService{
 
@@ -20,6 +19,8 @@ class ConfigService extends GetxService{
 
   final Connectivity connectivity = Connectivity();
 
+  /// 是否开启刷新token, 若开启 TokenInterceptor 中需要一个 /refreshToken 接口
+  bool isRefreshToken = false;
 
 
   Locale locale = const Locale('zh', 'CN');
