@@ -31,7 +31,8 @@ class EventCode {
 
 
 class IDKey {
-  static const String PAGE_STATE = 'PAGE_STATE';
+  static const String pageState = 'pageState';
+  static const String refresh = 'refresh';
 }
 
 

@@ -2,7 +2,7 @@ import 'package:common_utils/common/service/service.dart';
 import 'package:common_utils/common/utils/assets_provider.dart';
 import 'package:common_utils/common/widget/state/state.dart';
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh_pro/pull_to_refresh_pro.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'over_scroll_behavior.dart';
 
@@ -27,9 +27,10 @@ class Refresh extends StatelessWidget {
     this.onRefresh,
     this.onLoadMore,
     this.onRetry,
-    required this.loadState,
     required this.controller,
-    required this.child
+    required this.child,
+    required this.loadState,
+    required this.refreshState
   }) : super(key: key);
 
 
@@ -46,6 +47,8 @@ class Refresh extends StatelessWidget {
 
   /// 子类
   final MLoadState loadState;
+  final RefreshState refreshState;
+
   final Widget child;
   final RefreshController controller;
 
@@ -90,7 +93,7 @@ class Refresh extends StatelessWidget {
                       package: ConfigService.to.getCommonUtilsName()
                     ),
                     Positioned(
-                        bottom: -2,
+                        bottom: 4.0,
                         child: body
                     ),
                   ],
@@ -143,21 +146,21 @@ class Refresh extends StatelessWidget {
     } else if(loadState == MLoadState.empty){
       return buildEmpty();
     } else if(loadState == MLoadState.error) {
-      return buildError(onRetry);
+      return buildError(onRetry: onRetry);
     }
     return child;
   }
 
 
   Widget buildLoading(){
-    return LoadingPage();
+    return Padding(padding: const EdgeInsets.only(top: 30.0),child: LoadingPage());
   }
 
   Widget buildEmpty(){
     return const EmptyPage();
   }
 
-  Widget buildError(VoidCallback? onRetry) {
+  Widget buildError({VoidCallback? onRetry}) {
     return ErrorPage(onRetry: onRetry);
   }
 }

@@ -6,26 +6,29 @@ import 'base.dart';
 class BaseGetController extends GetxController {
 
   /// 是否开启多状态视图
-  bool enablePageState = false;
-
-  /// 加载状态
+  bool _enablePageState = false;
+  bool get enablePageState => _enablePageState;
+  set enablePageState(bool value) => _enablePageState = value;
+  /// 多状态视图 加载状态
   MLoadState _pageState = MLoadState.loading;
   MLoadState get pageState => _pageState;
-  void setPageState(MLoadState state) {
-    _pageState = state;
-  }
+  set pageState(MLoadState value) => _pageState = value;
 
 
-  //
-  // ///  允许下拉
-  // bool _enablePullDown = true;
-  // bool get enablePullDown => _enablePullDown;
-  // void setPullDown(bool value) => _enablePullDown = value;
-  //
-  // ///  允许上拉加载
-  // bool _enablePullUp = false;
-  // bool get enablePullUp => _enablePullUp;
-  // void setPullUp(bool value) => _enablePullUp = value;
+  // 下拉刷新组件
+  RefreshState _refreshState = RefreshState.first;
+  RefreshState get refreshState => _refreshState;
+  set refreshState(RefreshState value) => _refreshState = value;
+
+  ///  允许下拉
+  bool _enablePullDown = true;
+  bool get enablePullDown => _enablePullDown;
+  set enablePullDown(bool value) => _enablePullDown = value;
+  ///  允许上拉加载
+  bool _enablePullUp = false;
+  bool get enablePullUp => _enablePullUp;
+  set enablePullUp(bool value) => _enablePullUp = value;
+
 
   @override
   void onInit() {
@@ -57,37 +60,65 @@ class BaseGetController extends GetxController {
 
   @override
   void onClose() {
-    setPageState(MLoadState.loading);
-    enablePageState = false;
+    if(enablePageState) {
+      pageState = MLoadState.loading;
+      enablePageState = false;
+    }
     super.onClose();
   }
 
 
   void showPageLoading() {
-    setPageState(MLoadState.loading);
-    _updateState();
+    pageState = MLoadState.loading;
+    updatePageState();
   }
 
   void showPageEmpty() {
-    setPageState(MLoadState.empty);
-    _updateState();
+    pageState = MLoadState.empty;
+    updatePageState();
   }
 
   void showPageError() {
-    setPageState(MLoadState.error);
-    _updateState();
+    pageState = MLoadState.error;
+    updatePageState();
   }
 
   void showPageSuccess() {
-    setPageState(MLoadState.success);
-    _updateState();
+    pageState = MLoadState.success;
+    updatePageState();
   }
 
   void onPageRetry(){
     showPageLoading();
   }
 
-  void _updateState(){
-     update([IDKey.PAGE_STATE]);
+  void updatePageState(){
+     update([IDKey.pageState]);
+  }
+
+
+
+  void initPullLoading(){
+    refreshState = RefreshState.first;
+    updateRefresh();
+  }
+
+  void onRetry(){
+    refreshState = RefreshState.first;
+    updateRefresh();
+  }
+
+  void onRefresh() {
+    refreshState = RefreshState.up;
+    updateRefresh();
+  }
+
+  void onLoadMore() {
+    refreshState = RefreshState.down;
+    updateRefresh();
+  }
+
+  void updateRefresh(){
+    update([IDKey.refresh]);
   }
 }
