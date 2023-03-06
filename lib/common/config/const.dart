@@ -1,5 +1,9 @@
 class GlobalConfig{
   static const String BASE_URL = 'http://192.168.50.200:8080';
+
+  /// 拍摄视频最大时长 30 秒
+  static const Duration takeVideoDuration = Duration(seconds: 30);
+
 }
 
 class SaveInfoKey {

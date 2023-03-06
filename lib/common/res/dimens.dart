@@ -6,4 +6,6 @@ class KDimens {
 
   static const double slideGap = 15.0;
 
+  static const double modalRadius = 10.0;
+
 }

@@ -21,7 +21,7 @@ class _TakeVideoWidgetState extends State<TakeVideoWidget> {
     widget.cameraState.captureState$.listen((event) async {
       if (event != null && event.status == MediaCaptureStatus.success) {
         String filePath = event.filePath;
-        String fileTitle = filePath.split("/").last;
+        String fileTitle = filePath.split('/').last;
         File file = File(filePath);
 
         // 转换 AssetEntity
@@ -50,7 +50,7 @@ class _TakeVideoWidgetState extends State<TakeVideoWidget> {
       alignment: Alignment.bottomCenter,
       child: Container(
         color: Colors.black54,
-        height: 150,
+        height: 150.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

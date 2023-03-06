@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:common_utils/common/base/base.dart';
+import 'package:common_utils/common/utils/compress_utils.dart';
+import 'package:common_utils/common/utils/utils.dart';
 import 'package:common_utils/common/widget/camera/camera.dart';
 import 'package:common_utils/common/widget/photo_picker/photo_picker.dart';
 
@@ -20,17 +22,26 @@ class _TakePhotoWidgetState extends State<TakePhotoWidget> {
     widget.cameraState.captureState$.listen((event) async {
       if (event != null && event.status == MediaCaptureStatus.success) {
         String filePath = event.filePath;
-        String fileTitle = filePath.split("/").last;
+        String fileTitle = filePath.split('/').last;
         File file = File(filePath);
 
-        // 转换 AssetEntity
+        LogUtils.GGQ('----原文件大小:------>>${await file.length()}');
+        // 1 压缩图片
+        final newFile = await CompressUtils.compressImage(File(filePath));
+        if (newFile == null) {
+          return;
+        }
+        LogUtils.GGQ('----压缩文件大小:------>>${await newFile.length()}');
+
+        // 2 转换 AssetEntity
         final AssetEntity? asset = await PhotoManager.editor.saveImage(
-          file.readAsBytesSync(),
+          newFile.readAsBytesSync(),
           title: fileTitle,
         );
 
-        // 删除临时文件
+        // 3 删除临时文件
         await file.delete();
+        await newFile.delete();
 
         // ignore: use_build_context_synchronously
         Navigator.of(context).pop<AssetEntity?>(asset);

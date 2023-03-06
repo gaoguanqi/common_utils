@@ -14,6 +14,8 @@ export 'storage.dart';
 export 'image_loader.dart';
 export 'device_util.dart';
 export 'event_bus.dart';
+export 'compress_utils.dart';
+export 'bottom_sheet_picker.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_spinkit/flutter_spinkit.dart';
 export 'package:flutter_easyloading/flutter_easyloading.dart';

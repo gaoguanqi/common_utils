@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chewie/chewie.dart';
 import 'package:common_utils/common/base/base.dart';
 import 'package:common_utils/common/utils/compress_utils.dart';
+import 'package:common_utils/common/utils/toast.dart';
 import 'package:common_utils/common/widget/photo_picker/photo_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -30,10 +31,10 @@ class PlayerWidget extends StatefulWidget {
 class _PlayerWidgetState extends State<PlayerWidget> {
 
   // 强调色
-   Color accentColor = Colors.amberAccent;
+   final Color _accentColor = Colors.blueAccent;
 
   // 次文字颜色
-   Color secondaryTextColor = Colors.black45;
+   final Color _secondaryTextColor = Colors.black45;
 
   /// video 视频控制器
   VideoPlayerController? _videoController;
@@ -97,10 +98,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
     //
     try {
-      var file = await getFile();
+      final file = await getFile();
 
       // 开始视频压缩
-      var result = await CompressUtils.compressVideo(file);
+      final result = await CompressUtils.compressVideo(file);
 
       // video_player 初始化
       _videoController = VideoPlayerController.file(result.video!.file!);
@@ -115,10 +116,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             autoInitialize: true,
             showOptions: false,
             cupertinoProgressColors: ChewieProgressColors(
-              playedColor: accentColor,
+              playedColor: _accentColor,
             ),
             materialProgressColors: ChewieProgressColors(
-              playedColor: accentColor,
+              playedColor: _accentColor,
             ),
             allowPlaybackSpeedChanging: false,
             deviceOrientationsOnEnterFullScreen: [
@@ -135,6 +136,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       if (kDebugMode) {
         print(error);
       }
+      ToastUtils.showToast('video file error');
       setState(() {
         _isError = true;
       });
@@ -157,12 +159,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
          children: [
            // 进度状态 icon
            Container(
-             height: 40.0,
-             width: 40.0,
+             height: 32.0,
+             width: 32.0,
              alignment: Alignment.center,
              child: CircularProgressIndicator(
                strokeWidth: 2.0,
-               color: accentColor,
+               color: _accentColor,
              ),
            ),
            const SizedBox(height: 10.0),
@@ -170,8 +172,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
            Text(
              '${_progress.toStringAsFixed(2)}%',
              style: TextStyle(
-               fontSize: 13.0,
-               color: secondaryTextColor,
+               fontSize: 14.0,
+               fontWeight: FontWeight.bold,
+               color: _secondaryTextColor,
              ),
            ),
          ],

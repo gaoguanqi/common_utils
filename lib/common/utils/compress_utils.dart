@@ -30,7 +30,7 @@ class CompressUtils {
   }
 
   static Future<CompressMediaFile> compressVideo(File file) async {
-    var result = await Future.wait([
+    final result = await Future.wait([
       VideoCompress.compressVideo(
         file.path,
         quality: VideoQuality.Res640x480Quality,
@@ -41,7 +41,7 @@ class CompressUtils {
       VideoCompress.getFileThumbnail(
         file.path,
         quality: 80,
-        position: -1000,
+        position: -1,
       ),
     ]);
     return CompressMediaFile(

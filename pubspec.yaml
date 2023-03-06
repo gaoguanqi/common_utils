@@ -84,7 +84,12 @@ dependencies:
   # 格式化String https://github.com/Naddiseo/dart-sprintf
   sprintf: ^7.0.0
 
-  # 工具
+  # 底部弹框
+  modal_bottom_sheet: ^3.0.0-pre
+
+  # 常用颜色
+  css_colors: ^1.1.1
+
 
 
 
