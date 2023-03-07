@@ -90,6 +90,8 @@ dependencies:
   # 常用颜色
   css_colors: ^1.1.1
 
+  # 蓝牙
+#  flutter_blue_plus: ^1.4.0
 
 
 
